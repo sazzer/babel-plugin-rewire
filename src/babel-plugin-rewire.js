@@ -86,8 +86,17 @@ module.exports = function(pluginArguments) {
 						var settersArrayDeclaration = t.variableDeclaration('let', [t.variableDeclarator(noRewire(t.identifier("__$Setters__")), t.arrayExpression([]))]);
 						var resettersArrayDeclaration = t.variableDeclaration('let', [t.variableDeclarator(noRewire(t.identifier("__$Resetters__")), t.arrayExpression([]))]);
 
-						node.body.unshift(gettersArrayDeclaration, settersArrayDeclaration, resettersArrayDeclaration, universalGetter,
-							universalSetter, universalResetter, rewireAPIObject);
+						node.body.unshift(gettersArrayDeclaration, 
+								settersArrayDeclaration, 
+								resettersArrayDeclaration, 
+								t.identifier("/* istanbul ignore next */"),
+								universalGetter,
+								t.identifier("/* istanbul ignore next */"),
+								universalSetter, 
+								t.identifier("/* istanbul ignore next */"),
+								universalResetter, 
+								t.identifier("/* istanbul ignore next */"),
+								rewireAPIObject);
 
 						return node;
 					},
@@ -349,8 +358,11 @@ function accessorsFor(variableName, originalVar) {
 	);
 
 	return [
+		t.identifier("/* istanbul ignore next */"),
 		accessor(t.identifier("__$Getters__"), variableName, getter),
+		t.identifier("/* istanbul ignore next */"),
 		accessor(t.identifier("__$Setters__"), variableName, setter),
+		t.identifier("/* istanbul ignore next */"),
 		accessor(t.identifier("__$Resetters__"), variableName, resetter)
 	];
 }
