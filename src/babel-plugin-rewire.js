@@ -86,16 +86,19 @@ module.exports = function(pluginArguments) {
 						var settersArrayDeclaration = t.variableDeclaration('let', [t.variableDeclarator(noRewire(t.identifier("__$Setters__")), t.arrayExpression([]))]);
 						var resettersArrayDeclaration = t.variableDeclaration('let', [t.variableDeclarator(noRewire(t.identifier("__$Resetters__")), t.arrayExpression([]))]);
 
+                        var istanbulIgnoreComment = createIstanbulIgnoreComment();
+
+
 						node.body.unshift(gettersArrayDeclaration, 
 								settersArrayDeclaration, 
 								resettersArrayDeclaration, 
-								t.identifier("/* istanbul ignore next */"),
+                                istanbulIgnoreComment,
 								universalGetter,
-								t.identifier("/* istanbul ignore next */"),
+                                istanbulIgnoreComment,
 								universalSetter, 
-								t.identifier("/* istanbul ignore next */"),
+                                istanbulIgnoreComment,
 								universalResetter, 
-								t.identifier("/* istanbul ignore next */"),
+                                istanbulIgnoreComment,
 								rewireAPIObject);
 
 						return node;
@@ -328,6 +331,10 @@ function addNonEnumerableProperty(t, objectIdentifier, propertyName, valueIdenti
 	])]));
 }
 
+function createIstanbulIgnoreComment() {
+    return t.identifier("/* istanbul ignore next */");
+}
+
 function accessorsFor(variableName, originalVar) {
 	var accessor = function(array, variableName, operation) {
 		return t.expressionStatement(t.assignmentExpression("=", t.memberExpression(array, t.literal(variableName), true), operation));
@@ -357,12 +364,14 @@ function accessorsFor(variableName, originalVar) {
 			])
 	);
 
+    var istanbulIgnoreComment = createIstanbulIgnoreComment();
+
 	return [
-		t.identifier("/* istanbul ignore next */"),
+        istanbulIgnoreComment,
 		accessor(t.identifier("__$Getters__"), variableName, getter),
-		t.identifier("/* istanbul ignore next */"),
+        istanbulIgnoreComment,
 		accessor(t.identifier("__$Setters__"), variableName, setter),
-		t.identifier("/* istanbul ignore next */"),
+        istanbulIgnoreComment,
 		accessor(t.identifier("__$Resetters__"), variableName, resetter)
 	];
 }
